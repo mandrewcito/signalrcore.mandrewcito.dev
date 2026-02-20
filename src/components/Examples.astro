@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import { Code } from 'astro:components';
+
+const examples = (await getCollection('examples'))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="examples" id="examples" aria-labelledby="examples-title">
+  <div class="container">
+    <div class="section-header">
+      <h2 id="examples-title">Quick start</h2>
+      <p>Get connected in minutes</p>
+    </div>
+    <div class="examples-panel">
+      <div class="tabs-nav" role="tablist" aria-label="Code examples">
+        {examples.map((ex, i) => (
+          <button
+            class:list={['tab-btn', { active: i === 0 }]}
+            role="tab"
+            aria-selected={i === 0 ? 'true' : 'false'}
+            aria-controls={`tab-${ex.slug}`}
+            data-tab={ex.slug}
+          >
+            {ex.data.title}
+          </button>
+        ))}
+      </div>
+
+      {examples.map((ex, i) => (
+        <div
+          id={`tab-${ex.slug}`}
+          class:list={['tab-content', { active: i === 0 }]}
+          role="tabpanel"
+        >
+          <Code
+            code={ex.data.code.trimEnd()}
+            lang={ex.data.lang}
+            theme="github-dark"
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab!;
+      document.querySelectorAll('.tab-btn').forEach((b) => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      document.querySelectorAll('.tab-content').forEach((c) => c.classList.remove('active'));
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      document.getElementById(`tab-${tab}`)?.classList.add('active');
+    });
+  });
+</script>

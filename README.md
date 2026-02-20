@@ -1,2 +1,2 @@
 # signalrcore.mandrewcito.dev
-https://signalrcore.mandrewcito.dev sitet
+https://signalrcore.mandrewcito.dev site
